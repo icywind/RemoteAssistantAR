@@ -518,18 +518,6 @@ Transform:
   m_Father: {fileID: 2078625380}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &968100987 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3213118082870786036, guid: bc42a0f2d74ca47209acf554767fd3fb,
-    type: 3}
-  m_PrefabInstance: {fileID: 502088200}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1008715520
 GameObject:
   m_ObjectHideFlags: 0
@@ -892,7 +880,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1926870862}
   - component: {fileID: 1926870861}
-  - component: {fileID: 1926870863}
   m_Layer: 0
   m_Name: DrawListener
   m_TagString: Untagged
@@ -930,24 +917,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1926870863
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1926870860}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a6e7ba225bebf4f59b1fd8271bd3ce28, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parentCanvasObject: {fileID: 299840487}
-  DrawPrefab: {fileID: 5619390183224630413, guid: 56e9c6edfb1a041a58bca909da5b27e6,
-    type: 3}
-  graphicRaycaster: {fileID: 968100987}
-  showLocalDrawing: 0
-  DrawColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!1 &2065301638
 GameObject:
   m_ObjectHideFlags: 0

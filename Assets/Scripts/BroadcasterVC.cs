@@ -78,14 +78,8 @@ public class BroadcasterVC : PlayerViewControllerBase
     public override void OnSceneLoaded()
     {
         base.OnSceneLoaded();
-        GameObject go = GameObject.Find("ButtonColor");
-        if (go != null)
-        {
-            // the button is only available for AudienceVC
-            go.SetActive(false);
-        }
 
-        go = GameObject.Find("AR Camera");
+        GameObject go = GameObject.Find("AR Camera");
         if (go != null)
         {
             monoProxy = go.GetComponent<MonoBehaviour>();
