@@ -2,7 +2,7 @@
 
 # RemoteAssistantAR
 
-  This application is a Proof of Concept (POC) App for how to build a remote assistant app (similar to Vuforia Chalk) using AR Foundation and Agora.io's Video SDK.
+  This application is a Proof of Concept (POC) App for how to build a remote assistant app (similar to Vuforia Chalk) using AR Foundation and Agora.io's Video SDK. A complete tutorial is available on [this blog](https://medium.com/@rcsw.devel/video-chat-with-unity3d-and-ar-foundation-chapter-3-remote-assistant-app-c7e14a7b0527).
 
   
 
