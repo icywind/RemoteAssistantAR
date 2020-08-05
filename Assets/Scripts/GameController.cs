@@ -37,6 +37,7 @@ public class GameController : MonoBehaviour
 
     public PlayerMode PlayerMode { get; private set; }
     private IRtcEngine mRtcEngine;
+    public static CHANNEL_PROFILE ChannelProfile = CHANNEL_PROFILE.CHANNEL_PROFILE_COMMUNICATION;
 
     void Awake()
     {
@@ -188,6 +189,12 @@ public class GameController : MonoBehaviour
                 });
             }
         }
+    }
+
+    public void ToggleChannelProfile()
+    {
+        ChannelProfile = (CHANNEL_PROFILE)(((int)ChannelProfile + 1) % 3);
+        Debug.LogWarning("ChannelProfile is now " + ChannelProfile);
     }
 
     public void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)

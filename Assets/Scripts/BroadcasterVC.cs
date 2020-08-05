@@ -64,9 +64,19 @@ public class BroadcasterVC : PlayerViewControllerBase
         config.cameraDirection = CAMERA_DIRECTION.CAMERA_REAR;
         mRtcEngine.SetCameraCapturerConfiguration(config);
 
-        mRtcEngine.SetVideoQualityParameters(true);
+        mRtcEngine.SetVideoEncoderConfiguration(new VideoEncoderConfiguration
+        {
+            dimensions = new VideoDimensions { width = 360, height = 640 },
+            frameRate = FRAME_RATE.FRAME_RATE_FPS_24,
+            bitrate = 800,
+            orientationMode = ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT
+        });
+
+        //  mRtcEngine.SetVideoQualityParameters(true);
         mRtcEngine.SetExternalVideoSource(true, false);
 
+        mRtcEngine.SetChannelProfile(GameController.ChannelProfile);
+        mRtcEngine.SetClientRole(CLIENT_ROLE_TYPE.CLIENT_ROLE_BROADCASTER);
         // join channel
         mRtcEngine.JoinChannel(channel, null, 0);
 
@@ -78,8 +88,14 @@ public class BroadcasterVC : PlayerViewControllerBase
     public override void OnSceneLoaded()
     {
         base.OnSceneLoaded();
+        GameObject go = GameObject.Find("ButtonColor");
+        if (go != null)
+        {
+            // the button is only available for AudienceVC
+            go.SetActive(false);
+        }
 
-        GameObject go = GameObject.Find("AR Camera");
+        go = GameObject.Find("AR Camera");
         if (go != null)
         {
             monoProxy = go.GetComponent<MonoBehaviour>();
@@ -303,7 +319,6 @@ public class BroadcasterVC : PlayerViewControllerBase
             externalVideoFrame.cropRight = 10;
             externalVideoFrame.cropBottom = 10;
             //Rotate the video frame (0, 90, 180, or 270)
-            //externalVideoFrame.rotation = 90;
             externalVideoFrame.rotation = 180;
             // increment i with the video timestamp
             externalVideoFrame.timestamp = i++;

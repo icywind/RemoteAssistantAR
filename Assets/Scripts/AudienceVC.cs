@@ -64,6 +64,33 @@ public class AudienceVC : PlayerViewControllerBase
         dataStreamId = rtcEngine.CreateDataStream(reliable: true, ordered: true);
     }
 
+    public override void Join(string channel)
+    {
+        Debug.Log("Aud calling join (channel = " + channel + ")");
+
+        if (mRtcEngine == null)
+            return;
+
+        // set callbacks (optional)
+        mRtcEngine.OnJoinChannelSuccess = OnJoinChannelSuccess;
+        mRtcEngine.OnUserJoined = OnUserJoined;
+        mRtcEngine.OnUserOffline = OnUserOffline;
+
+        // enable video
+        mRtcEngine.EnableVideo();
+        // allow camera output callback
+        mRtcEngine.EnableVideoObserver();
+        mRtcEngine.EnableLocalAudio(false);
+        mRtcEngine.MuteLocalAudioStream(true);
+
+        //mRtcEngine.SetChannelProfile(CHANNEL_PROFILE.CHANNEL_PROFILE_LIVE_BROADCASTING);
+        //mRtcEngine.SetClientRole(CLIENT_ROLE_TYPE.CLIENT_ROLE_AUDIENCE);
+
+        // join channel
+        mRtcEngine.JoinChannel(channel, null, 0);
+
+        Debug.Log("initializeEngine done");
+    }
     void ProcessDrawing(DrawmarkModel dm)
     {
         monoProxy.StartCoroutine(CoProcessDrawing(dm));
