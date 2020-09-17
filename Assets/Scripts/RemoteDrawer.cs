@@ -25,7 +25,7 @@ public class RemoteDrawer : MonoBehaviour
         rtcEngine = IRtcEngine.QueryEngine();
         if (rtcEngine != null)
         {
-            rtcEngine.OnStreamMessage += HandleStreamMessage;
+            rtcEngine.OnStreamMessage += OnStreamMessageHandler;
         }
 
         CamStart();
@@ -39,8 +39,9 @@ public class RemoteDrawer : MonoBehaviour
     /// <param name="streamId"></param>
     /// <param name="data"></param>
     /// <param name="length"></param>
-    void HandleStreamMessage(uint userId, int streamId, string data, int length)
+    void OnStreamMessageHandler(uint userId, int streamId, byte[] buffer, int length)
     {
+        string data = System.Text.Encoding.UTF8.GetString(buffer, 0, length);
         if (data.Contains("color"))
         {
             StartCoroutine(CoProcessDrawingData(data));
@@ -50,8 +51,7 @@ public class RemoteDrawer : MonoBehaviour
             Destroy(anchorGO);
         }
 
-
-        Debug.LogWarning("Main Camera pos = " + Camera.main.transform.position);
+        Debug.Log("Main Camera pos = " + Camera.main.transform.position);
     }
 
     /// <summary>

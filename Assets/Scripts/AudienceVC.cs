@@ -99,9 +99,10 @@ public class AudienceVC : PlayerViewControllerBase
     IEnumerator CoProcessDrawing(DrawmarkModel dm)
     {
         string json = JsonUtility.ToJson(dm);
+        byte[] data = System.Text.Encoding.UTF8.GetBytes(json);
         if (dataStreamId > 0)
         {
-            rtcEngine.SendStreamMessage(dataStreamId, json);
+            rtcEngine.SendStreamMessage(dataStreamId, data);
         }
 
         yield return null;
@@ -110,9 +111,10 @@ public class AudienceVC : PlayerViewControllerBase
     IEnumerator CoClearDrawing()
     {
         string json = "{\"clear\": true}";
+        byte[] data = System.Text.Encoding.UTF8.GetBytes(json);
         if (dataStreamId > 0)
         {
-            rtcEngine.SendStreamMessage(dataStreamId, json);
+            rtcEngine.SendStreamMessage(dataStreamId, data);
         }
 
         yield return null;
