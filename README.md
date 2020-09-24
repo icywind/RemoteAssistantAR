@@ -48,3 +48,4 @@ The second user will input the same channel name as the first user and JOIN the 
 - The drawn outlines may not be on the surface of target object; this is due to hardcoded Z-Positions of the placement.  
 - There may be a few seconds delay when the two clients join the channel and start streaming.
 - You may experience long delays on lower end devices (e.g. iPhone 6s) if you try to screen record the CastAR Client. 
+- This project is design for running in 1-to-1 Communication mode. Please make your own modification for more users.
