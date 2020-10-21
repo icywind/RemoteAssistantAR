@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using agora_gaming_rtc;
+using UnityEngine.SceneManagement;
 
 public class PlayerViewControllerBase : IVideoChatClient
 {
@@ -129,6 +130,18 @@ public class PlayerViewControllerBase : IVideoChatClient
 
         VideoSurface videoSurface = go.AddComponent<VideoSurface>();
         videoSurface.enabled = false;
+
+
+        go = GameObject.Find("ButtonExit");
+        if (go != null)
+        {
+            Button button = go.GetComponent<Button>();
+            if (button != null)
+            {
+                button.onClick.AddListener(OnLeaveButtonClicked);
+            }
+        }
+        SetupToggleMic();
     }
 
     // implement engine callbacks
@@ -187,4 +200,40 @@ public class PlayerViewControllerBase : IVideoChatClient
             videoSurface.enabled = false;
         }
     }
+
+    private void OnLeaveButtonClicked()
+    {
+        Leave(); // leave channel
+        UnloadEngine(); // delete engine
+        SceneManager.LoadScene(GameController.HomeSceneName, LoadSceneMode.Single);
+        GameObject gameObject = GameObject.Find("GameController");
+        Object.Destroy(gameObject);
+    }
+
+    private void SetupToggleMic()
+    {
+
+        GameObject go = GameObject.Find("ToggleButton");
+        if (go != null)
+        {
+            ToggleButton toggle = go.GetComponent<ToggleButton>();
+            if (toggle != null)
+            {
+                toggle.button1.onClick.AddListener(() =>
+                {
+                    toggle.Tap();
+                    mRtcEngine.EnableLocalAudio(false);
+                    mRtcEngine.MuteLocalAudioStream(true);
+                });
+                toggle.button2.onClick.AddListener(() =>
+                {
+                    toggle.Tap();
+                    mRtcEngine.EnableLocalAudio(true);
+                    mRtcEngine.MuteLocalAudioStream(false);
+                });
+            }
+        }
+    }
+
+
 }

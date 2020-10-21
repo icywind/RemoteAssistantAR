@@ -25,7 +25,6 @@ public class BroadcasterVC : PlayerViewControllerBase
 
     MonoBehaviour monoProxy;
     int i = 0; // monotonic timestamp counter
-    Camera renderCamera = null;
 
     Texture2D BufferTexture;
 
@@ -41,36 +40,25 @@ public class BroadcasterVC : PlayerViewControllerBase
         mRtcEngine.OnUserJoined = OnUserJoined;
         mRtcEngine.OnUserOffline = OnUserOffline;
 
-        int s = mRtcEngine.SetVideoEncoderConfiguration(new VideoEncoderConfiguration
-        {
-            dimensions = new VideoDimensions()
-            {
-                width = 1080,
-                height = 1920
-            },
-            orientationMode = ORIENTATION_MODE.ORIENTATION_MODE_ADAPTIVE
-        });
-#if !UNITY_EDITOR
-        Debug.Assert(s == 0, "RTC set video encoder configuration failed.");
-#endif
-
-        // enable video
-        mRtcEngine.EnableVideo();
-        // allow camera output callback
-        mRtcEngine.EnableVideoObserver();
-        //mRtcEngine.EnableLocalVideo(false);
         CameraCapturerConfiguration config = new CameraCapturerConfiguration();
         config.preference = CAPTURER_OUTPUT_PREFERENCE.CAPTURER_OUTPUT_PREFERENCE_AUTO;
         config.cameraDirection = CAMERA_DIRECTION.CAMERA_REAR;
         mRtcEngine.SetCameraCapturerConfiguration(config);
 
-        mRtcEngine.SetVideoEncoderConfiguration(new VideoEncoderConfiguration
+        int s = mRtcEngine.SetVideoEncoderConfiguration(new VideoEncoderConfiguration
         {
             dimensions = new VideoDimensions { width = 360, height = 640 },
             frameRate = FRAME_RATE.FRAME_RATE_FPS_24,
             bitrate = 800,
             orientationMode = ORIENTATION_MODE.ORIENTATION_MODE_FIXED_PORTRAIT
         });
+        Debug.Assert(s == 0, "RTC set video encoder configuration failed.");
+
+        // enable video
+        mRtcEngine.EnableVideo();
+        // allow camera output callback
+        mRtcEngine.EnableVideoObserver();
+        //mRtcEngine.EnableLocalVideo(false);
 
         //  mRtcEngine.SetVideoQualityParameters(true);
         mRtcEngine.SetExternalVideoSource(true, false);
@@ -115,9 +103,6 @@ public class BroadcasterVC : PlayerViewControllerBase
                     sphere.SetActive(true);
                 }));
         }
-
-        go = GameObject.Find("RenderCamera");
-        renderCamera = go.GetComponent<Camera>();
     }
 
     // When a remote user joined, this delegate will be called. Typically
@@ -125,10 +110,15 @@ public class BroadcasterVC : PlayerViewControllerBase
     protected override void OnUserJoined(uint uid, int elapsed)
     {
         base.OnUserJoined(uid, elapsed);
-        OnEnable();
     }
 
-    void OnEnable()
+    protected override void OnJoinChannelSuccess(string channelName, uint uid, int elapsed)
+    {
+        base.OnJoinChannelSuccess(channelName, uid, elapsed);
+        EnableSharing();
+    }
+
+    void EnableSharing()
     {
         cameraManager.frameReceived += OnCameraFrameReceived;
         RenderTexture renderTexture = Camera.main.targetTexture;
@@ -145,11 +135,17 @@ public class BroadcasterVC : PlayerViewControllerBase
         }
     }
 
-    void OnDisable()
+    void DisableSharing()
     {
         cameraManager.frameReceived -= OnCameraFrameReceived;
 
         BufferTexture = null;
+    }
+
+    public override void Leave()
+    {
+        DisableSharing();
+        base.Leave();
     }
 
     IEnumerator DelayAction(float delay, System.Action doAction)
@@ -188,7 +184,7 @@ public class BroadcasterVC : PlayerViewControllerBase
         {
             UnityEngine.Object.Destroy(go);
         }
-        OnDisable();
+        // DisableSharing();
     }
 
     // Uncomment the follow function to try out XRCameraImage method to 

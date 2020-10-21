@@ -25,13 +25,17 @@ public class GameController : MonoBehaviour
 #endif
     static IVideoChatClient app = null;
 
-    private string HomeSceneName = "MainScene";
+    public const string HomeSceneName = "MainScene";
 
     private string AudienceSceneName = "AudPlayScene";
     private string BroadcastSceneName = "CastARScene";
 
+    [SerializeField] Text ModeText = null;
+    [SerializeField] Button LogoButton = null;
+    [SerializeField] Button ViewerButton = null;
     // PLEASE KEEP THIS App ID IN SAFE PLACE
     // Get your own App ID at https://dashboard.agora.io/
+    [Header("Agora Properties")]
     [SerializeField]
     private string AppID = "your_appid";
 
@@ -57,6 +61,7 @@ public class GameController : MonoBehaviour
             ShowVersion();
         }
         LoadLastChannel();
+        SetupUI();
     }
 
     void Update()
@@ -70,6 +75,22 @@ public class GameController : MonoBehaviour
     /// <returns>yes => a string of at least 10 characters long ...</returns>
     private bool CheckAppId()
     {
+        GameObject go = GameObject.Find("AppIDText");
+        if (go != null)
+        {
+            Text appIDText = go.GetComponent<Text>();
+            if (appIDText != null)
+            {
+                if (string.IsNullOrEmpty(AppID))
+                {
+                    appIDText.text = "AppID: " + "UNDEFINED!";
+                }
+                else
+                {
+                    appIDText.text = "AppID: " + AppID.Substring(0, 4) + "********" + AppID.Substring(AppID.Length - 4, 4);
+                }
+            }
+        }
         Debug.Assert(AppID.Length > 10, "Please fill in your AppId first on Game Controller object.");
         return AppID.Length > 10;
     }
@@ -101,6 +122,14 @@ public class GameController : MonoBehaviour
             field.text = channel;
         }
     }
+
+    private void SetupUI()
+    {
+        ModeText.text = ChannelProfile.ToString();
+        LogoButton.onClick.AddListener(ToggleChannelProfile);
+        ViewerButton.gameObject.SetActive(ChannelProfile == CHANNEL_PROFILE.CHANNEL_PROFILE_LIVE_BROADCASTING);
+    }
+
 
     private void ShowVersion()
     {
@@ -135,7 +164,7 @@ public class GameController : MonoBehaviour
         }
         else
         {
-            app = new AudienceVC();
+            app = new AudienceVC(mode == 2);
         }
 
         app.LoadEngine(AppID);
@@ -152,49 +181,12 @@ public class GameController : MonoBehaviour
         SceneManager.LoadScene(PlayerMode == PlayerMode.Audience ? AudienceSceneName : BroadcastSceneName, LoadSceneMode.Single);
     }
 
-    private void OnLeaveButtonClicked()
-    {
-        if (!ReferenceEquals(app, null))
-        {
-            app.Leave(); // leave channel
-            app.UnloadEngine(); // delete engine
-            app = null; // delete app
-            SceneManager.LoadScene(HomeSceneName, LoadSceneMode.Single);
-        }
-        Destroy(gameObject);
-    }
-
-
-    private void SetupToggleMic()
-    {
-
-        GameObject go = GameObject.Find("ToggleButton");
-        if (go != null)
-        {
-            ToggleButton toggle = go.GetComponent<ToggleButton>();
-            if (toggle != null)
-            {
-
-                toggle.button1.onClick.AddListener(() =>
-                {
-                    toggle.Tap();
-                    mRtcEngine.EnableLocalAudio(false);
-                    mRtcEngine.MuteLocalAudioStream(true);
-                });
-                toggle.button2.onClick.AddListener(() =>
-                {
-                    toggle.Tap();
-                    mRtcEngine.EnableLocalAudio(true);
-                    mRtcEngine.MuteLocalAudioStream(false);
-                });
-            }
-        }
-    }
-
     public void ToggleChannelProfile()
     {
         ChannelProfile = (CHANNEL_PROFILE)(((int)ChannelProfile + 1) % 3);
         Debug.LogWarning("ChannelProfile is now " + ChannelProfile);
+        ModeText.text = ChannelProfile.ToString();
+        ViewerButton.gameObject.SetActive(ChannelProfile == CHANNEL_PROFILE.CHANNEL_PROFILE_LIVE_BROADCASTING);
     }
 
     public void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
@@ -206,16 +198,6 @@ public class GameController : MonoBehaviour
                 app.OnSceneLoaded(); // call this after scene is loaded
             }
 
-            GameObject go = GameObject.Find("ButtonExit");
-            if (go != null)
-            {
-                Button button = go.GetComponent<Button>();
-                if (button != null)
-                {
-                    button.onClick.AddListener(OnLeaveButtonClicked);
-                }
-            }
-            SetupToggleMic();
             SceneManager.sceneLoaded -= OnLevelFinishedLoading;
         }
     }

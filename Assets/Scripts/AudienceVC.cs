@@ -17,6 +17,8 @@ public class AudienceVC : PlayerViewControllerBase
 
     IRtcEngine rtcEngine;
     int dataStreamId = 0;
+    bool ViewOnly { get; set; }
+
 
     protected override string RemoteStreamTargetImage
     {
@@ -24,6 +26,11 @@ public class AudienceVC : PlayerViewControllerBase
         {
             return MainVideoName;
         }
+    }
+
+    public AudienceVC(bool viewOnly)
+    {
+        ViewOnly = viewOnly;
     }
 
     public override void OnSceneLoaded()
@@ -40,6 +47,7 @@ public class AudienceVC : PlayerViewControllerBase
         {
             colorButtonController = gameObject.GetComponent<ColorButtonController>();
             monoProxy = colorButtonController.GetComponent<MonoBehaviour>();
+
         }
 
         gameObject = GameObject.Find("TouchWatcher");
@@ -58,6 +66,15 @@ public class AudienceVC : PlayerViewControllerBase
             {
                 touchWatcher.DrawColor = color;
             };
+        }
+
+        if (ViewOnly)
+        {
+            colorButtonController?.gameObject.SetActive(false);
+            touchWatcher?.gameObject.SetActive(false);
+            GameObject.Find(SelfVideoName)?.SetActive(false);
+            GameObject.Find("ToggleButton")?.SetActive(false);
+            GameObject.Find("ButtonClear")?.SetActive(false);
         }
 
         rtcEngine = IRtcEngine.QueryEngine();
@@ -83,8 +100,11 @@ public class AudienceVC : PlayerViewControllerBase
         mRtcEngine.EnableLocalAudio(false);
         mRtcEngine.MuteLocalAudioStream(true);
 
-        //mRtcEngine.SetChannelProfile(CHANNEL_PROFILE.CHANNEL_PROFILE_LIVE_BROADCASTING);
-        //mRtcEngine.SetClientRole(CLIENT_ROLE_TYPE.CLIENT_ROLE_AUDIENCE);
+        if (ViewOnly)
+        {
+            mRtcEngine.SetChannelProfile(CHANNEL_PROFILE.CHANNEL_PROFILE_LIVE_BROADCASTING);
+            mRtcEngine.SetClientRole(CLIENT_ROLE_TYPE.CLIENT_ROLE_AUDIENCE);
+        }
 
         // join channel
         mRtcEngine.JoinChannel(channel, null, 0);
