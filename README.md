@@ -42,6 +42,18 @@ The AR Remote Assistant app is meant to be used by two users who are in two sepa
 The second user will input the same channel name as the first user and JOIN the channel. Once both users are in the channel, the user that "JOINED" the channel has the ability to draw on their screen, and the touch input is sent to the other user and displayed in Augmented Reality.
 ![RemoteAssistantAR](https://user-images.githubusercontent.com/1261195/77468506-e3bf2e00-6dca-11ea-88fe-a82aa527f5a0.png)
 
+### Update 1
+
+ - For testing with LiveBroadcasting Mode:
+
+![Screen Shot 2020-11-04 at 6 24 44 PM](https://user-images.githubusercontent.com/1261195/98190089-2f8e9580-1ecb-11eb-9073-73706d0723e3.png)
+
+ - Tap the Logo to switch modes.  The Viewer button will only appear for
+   LIVE_BROADCASTING mode.
+
+  
+
+
 ### Disclaimer
 - This is not the only approach to do AR Screen Sharing.  Please contribute your ideas and make pull request if you have a better solution.
 ### Known Issues
